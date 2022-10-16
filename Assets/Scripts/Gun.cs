@@ -12,6 +12,7 @@ public class Gun : MonoBehaviour
     [SerializeField] InputActionReference shootAction;
     [SerializeField] Transform muzzle;
     [SerializeField] GameObject impactEffect;
+    [SerializeField] Animator muzzleFlashAnimator;
 
     [Header("Crosshair")]
     [SerializeField] GameObject crosshair;
@@ -52,6 +53,7 @@ public class Gun : MonoBehaviour
 
     void Shoot(InputAction.CallbackContext ctx)
     {
+        muzzleFlashAnimator.SetTrigger("isFiring");
         RaycastHit hitInfo;
         if (Physics.Raycast(muzzle.position, muzzle.forward, out hitInfo, range))
         {
