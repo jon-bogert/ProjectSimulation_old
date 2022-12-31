@@ -5,7 +5,7 @@ using BNG;
 using Microsoft.Win32.SafeHandles;
 using Unity.Mathematics;
 using Unity.XR.CoreUtils;
-using UnityEditor.iOS.Xcode;
+//using UnityEditor.iOS.Xcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;

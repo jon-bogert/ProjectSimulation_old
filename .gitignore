@@ -27,6 +27,9 @@
 .vs/
 .idea/
 
+#External Projects folder
+Projects/
+
 # Gradle cache directory
 .gradle/
 
