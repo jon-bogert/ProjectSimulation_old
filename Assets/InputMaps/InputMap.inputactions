@@ -49,6 +49,24 @@
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ClimbRight",
+                    "type": "Button",
+                    "id": "9f84b836-f820-4a5a-855a-85ba6d11fad9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ClimbLeft",
+                    "type": "Button",
+                    "id": "02ce67cd-2fd2-49d7-9740-8f2dcca7e79c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -93,6 +111,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c8b61d44-98aa-44bd-b478-cc3c83fca645",
+                    "path": "<XRController>{RightHand}/gripPressed",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClimbRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "106ad7eb-500f-4255-af35-b6c03490d1e1",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClimbLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

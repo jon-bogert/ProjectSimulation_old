@@ -5,7 +5,6 @@ using BNG;
 using Microsoft.Win32.SafeHandles;
 using Unity.Mathematics;
 using Unity.XR.CoreUtils;
-//using UnityEditor.iOS.Xcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -14,7 +13,7 @@ public class XRCharacterController : MonoBehaviour
 {
     [Header("Continuous Movement")]
     [SerializeField] float moveSpeed = 2f;
-    
+
     [Header("Snap Turn")]
     [SerializeField] float activateValue = 0.5f;
     [SerializeField] float resetValue = 0.1f;
@@ -33,6 +32,8 @@ public class XRCharacterController : MonoBehaviour
     Vector3 _moveVector;
     bool _turnTrig = false;
 
+    Vector3 velocity = Vector3.zero;
+
     //Private references
     VRDebug _vrDebug;
 
@@ -40,6 +41,7 @@ public class XRCharacterController : MonoBehaviour
     XROrigin _xrOrigin;
     Camera _camera;
     PlayerGravity _gravity;
+    Player _player;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +52,7 @@ public class XRCharacterController : MonoBehaviour
         _xrOrigin = GetComponent<XROrigin>();
         _gravity = GetComponent<PlayerGravity>();
         _camera = _xrOrigin.Camera;
+        _player = GetComponent<Player>();
         
         //Subscribe Input Actions
         _moveInput.action.performed += MoveInput;
@@ -73,17 +76,25 @@ public class XRCharacterController : MonoBehaviour
     {
         ControllerUpdate();
         Move();
-
     }
 
     void Move()
     {
-        Vector3 forward = Vector3.Normalize(new Vector3(_camera.transform.forward.x, 0f, _camera.transform.forward.z));
-        Vector3 right = Vector3.Normalize(new Vector3(_camera.transform.right.x, 0f, _camera.transform.right.z));
-        
-        Vector3 direction = right * _moveVector.x + forward * _moveVector.z;
-        _vrDebug.Monitor(3, direction.ToString());
-        _charController.Move(  direction * (moveSpeed * Time.deltaTime));
+        if (!_player.GetIsClimbing())
+        {
+            Vector3 forward =
+                Vector3.Normalize(new Vector3(_camera.transform.forward.x, 0f, _camera.transform.forward.z));
+            Vector3 right = Vector3.Normalize(new Vector3(_camera.transform.right.x, 0f, _camera.transform.right.z));
+
+            Vector3 direction = right * _moveVector.x + forward * _moveVector.z;
+            //_vrDebug.Monitor(3, direction.ToString());
+            _charController.Move(direction * (moveSpeed * Time.deltaTime));
+        }
+    }
+
+    public void ClimbMove(Vector3 amt)
+    {
+        _charController.Move(amt);
     }
 
     void MoveInput(InputAction.CallbackContext ctx)
@@ -124,5 +135,10 @@ public class XRCharacterController : MonoBehaviour
         _charController.height = position.y;
         Vector3 newCenter = new Vector3(position.x, _charController.height * 0.5f, position.z);
         _charController.center = newCenter;
+    }
+
+    public void SetGravityEnabled(bool setTo)
+    {
+        _gravity.GravityEnabled = setTo;
     }
 }
