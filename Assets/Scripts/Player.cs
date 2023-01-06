@@ -72,10 +72,13 @@ public class Player : MonoBehaviour
     void Update()
     {
         _vrDebug.Monitor(1, handLeft.transform.localPosition.y.ToString());
-        if (isClimbingLeft || isClimbingRight)
+        bool left = isClimbingLeft && handLeft.GetCanClimb();
+        bool right = isClimbingRight && handRight.GetCanClimb();
+        
+        if (left || right)
         {
             _charController.SetGravityEnabled(false);
-            Climb();
+            Climb(left, right);
         }
         else _charController.SetGravityEnabled(true);
     }
@@ -96,11 +99,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Climb()
+    void Climb(bool left, bool right)
     {
-        bool left = isClimbingLeft && handLeft.GetCanClimb();
-        bool right = isClimbingRight && handRight.GetCanClimb();
-        
         if (left && right)
         {
             _charController.ClimbMove((-handLeft.GetPosDelta() - handRight.GetPosDelta()) / 2);
