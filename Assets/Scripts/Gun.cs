@@ -34,6 +34,16 @@ public class Gun : MonoBehaviour
         shootAction.action.performed -= Shoot;
     }
 
+    void OnEnable()
+    {
+        crosshair.SetActive(true);
+    }
+
+    void OnDisable()
+    {
+        crosshair.SetActive(false);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -53,18 +63,21 @@ public class Gun : MonoBehaviour
 
     void Shoot(InputAction.CallbackContext ctx)
     {
-        muzzleFlashAnimator.SetTrigger("isFiring");
-        RaycastHit hitInfo;
-        if (Physics.Raycast(muzzle.position, muzzle.forward, out hitInfo, range))
+        if (isActiveAndEnabled)
         {
-            Destructable destructable = hitInfo.transform.GetComponent<Destructable>();
-            if (destructable != null)
+            muzzleFlashAnimator.SetTrigger("isFiring");
+            RaycastHit hitInfo;
+            if (Physics.Raycast(muzzle.position, muzzle.forward, out hitInfo, range))
             {
-                destructable.Damage(damage);
-                _vrDebug.Log("Hit: " + hitInfo.transform.name);
-            }
-            Instantiate(impactEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-        }
+                Destructable destructable = hitInfo.transform.GetComponent<Destructable>();
+                if (destructable != null)
+                {
+                    destructable.Damage(damage);
+                    _vrDebug.Log("Hit: " + hitInfo.transform.name);
+                }
 
+                Instantiate(impactEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+            }
+        }
     }
 }

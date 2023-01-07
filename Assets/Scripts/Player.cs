@@ -2,44 +2,62 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting;
+using Unity.XR.CoreUtils;
 //using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
 
-enum WeaponMode : int
+public enum WeaponMode : int
 {
     None, SemiAutoRifle
 }
 
-enum GadgetMode : int
+public enum GadgetMode : int
 {
     None
 }
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] GameObject cameraOffset;
     [SerializeField] GameObject rightController;
     [SerializeField] Cartridge cartridge;
-    [SerializeField] PlayerHand handLeft;
-    [SerializeField] PlayerHand handRight;
 
     [SerializeField] WeaponMode weaponMode;
     [SerializeField] GadgetMode gadgetMode;
     [SerializeField] bool isWeaponLeft = true;
 
+    [SerializeField] GameObject weaponMenu;
+
     [Header("Input")]
     [SerializeField] InputActionReference _ejectInput;
     [SerializeField] InputActionReference _climbLeftInput;
     [SerializeField] InputActionReference _climbRightInput;
+    [SerializeField] InputActionReference _gadgetRightInput;
+    
+    [Header("Weapon Objects")]
+    [SerializeField] PlayerHand handRight;
+    [SerializeField] GameObject semiAutoRifle;
 
+    [Header("Gadget Objects")]
+    [SerializeField] PlayerHand handLeft;
+    
     VRDebug _vrDebug;
     XRCharacterController _charController;
-    bool isClimbingLeft = false;
-    bool isClimbingRight = false;
-
+    
     bool shouldTeleportLeft = false;
     bool shouldTeleportRight = false;
+
+    WeaponMode lastWeapon = WeaponMode.None;
+    GadgetMode lastGadget = GadgetMode.None;
+    
+    //Input Related
+    bool isClimbingLeft = false;
+    bool isClimbingRight = false;
+    bool isRightGadgetVisible = false;
+
 
 
     void Awake()
@@ -51,6 +69,7 @@ public class Player : MonoBehaviour
         _ejectInput.action.performed -= Eject;
         _climbLeftInput.action.performed -= ClimbLeft;
         _climbRightInput.action.performed -= ClimbRight;
+        _gadgetRightInput.action.performed -= GadgetRight;
     }
 
     // Start is called before the first frame update
@@ -66,15 +85,15 @@ public class Player : MonoBehaviour
         _ejectInput.action.performed += Eject;
         _climbLeftInput.action.performed += ClimbLeft;
         _climbRightInput.action.performed += ClimbRight;
+        _gadgetRightInput.action.performed += GadgetRight;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _vrDebug.Monitor(1, handLeft.transform.localPosition.y.ToString());
+        //Climbing
         bool left = isClimbingLeft && handLeft.GetCanClimb();
         bool right = isClimbingRight && handRight.GetCanClimb();
-        
         if (left || right)
         {
             _charController.SetGravityEnabled(false);
@@ -154,5 +173,56 @@ public class Player : MonoBehaviour
     public bool GetIsClimbing()
     {
         return (isClimbingLeft && handLeft.GetCanClimb()) || (isClimbingRight && handRight.GetCanClimb());
+    }
+
+    void GadgetRight(InputAction.CallbackContext ctx)
+    {
+        isRightGadgetVisible = !isRightGadgetVisible;
+        if (isRightGadgetVisible)
+        {
+            weaponMode = WeaponMode.None;
+            AssignWeapon();
+            weaponMenu.SetActive(true);
+            weaponMenu.transform.position = handRight.transform.position;
+            weaponMenu.transform.LookAt(cameraOffset.transform.position);
+        }
+        else
+        {
+            weaponMenu.SetActive(false);
+            WeaponMode newMode = handRight.GetWeaponModeBuffer();
+            // If None -> Check Toggle to last weapon used
+            if (weaponMode == WeaponMode.None && newMode == WeaponMode.None)
+            {
+                _vrDebug.Log("BAM");
+                weaponMode = lastWeapon;
+            }
+            else
+            {
+                if (newMode != WeaponMode.None)
+                {
+                    lastWeapon = weaponMode;
+                }
+                weaponMode = newMode;
+            }
+            AssignWeapon();
+        }
+    }
+
+    void AssignWeapon()
+    {
+        //Deactivate All
+        handRight.gameObject.SetActive(false);
+        semiAutoRifle.SetActive(false);
+        
+        //ActivateSelected
+        switch (weaponMode)
+        {
+            case WeaponMode.None:
+                handRight.gameObject.SetActive(true);
+                break;
+            case WeaponMode.SemiAutoRifle :
+                semiAutoRifle.SetActive(true);
+                break;
+        }
     }
 }

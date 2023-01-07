@@ -9,6 +9,9 @@ public class PlayerHand : MonoBehaviour
     Vector3 prevPos;
 
     Climbable climbable;
+
+    WeaponMode _weaponModeBuffer = WeaponMode.None;
+    GadgetMode _gadgetModeBuffer = GadgetMode.None;
     
     //references
     SphereCollider _collider;
@@ -40,6 +43,19 @@ public class PlayerHand : MonoBehaviour
         {
             canClimb = true;
             climbable = collision.GetComponent<Climbable>();
+        }
+
+        ToolMenuButton toolMenuButton = collision.GetComponent<ToolMenuButton>();
+        if (toolMenuButton != null)
+        {
+            if (toolMenuButton.GetUseWeaponMode())
+            {
+                _weaponModeBuffer = toolMenuButton.GetWeaponMode();
+            }
+            else
+            {
+                _gadgetModeBuffer = toolMenuButton.GetGadgetMode();
+            }
         }
     }
 
@@ -80,5 +96,15 @@ public class PlayerHand : MonoBehaviour
     public Climbable GetClimbable()
     {
         return climbable;
+    }
+
+    public WeaponMode GetWeaponModeBuffer()
+    {
+        return _weaponModeBuffer;
+    }
+
+    public GadgetMode GetGadgetModeBuffer()
+    {
+        return _gadgetModeBuffer;
     }
 }

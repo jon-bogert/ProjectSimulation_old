@@ -51,6 +51,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ClimbLeft",
+                    "type": "Button",
+                    "id": "02ce67cd-2fd2-49d7-9740-8f2dcca7e79c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "ClimbRight",
                     "type": "Button",
                     "id": "9f84b836-f820-4a5a-855a-85ba6d11fad9",
@@ -60,9 +69,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ClimbLeft",
+                    "name": "GadgetRight",
                     "type": "Button",
-                    "id": "02ce67cd-2fd2-49d7-9740-8f2dcca7e79c",
+                    "id": "837c3fd9-4eb3-4f75-bb21-d1f53b42a0f6",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -127,23 +136,34 @@
                 },
                 {
                     "name": "",
-                    "id": "106ad7eb-500f-4255-af35-b6c03490d1e1",
-                    "path": "<XRController>{LeftHand}/gripPressed",
-                    "interactions": "Press(behavior=2)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ClimbLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "210611ef-3f37-43c4-8201-8514925be9ce",
                     "path": "<XRController>{RightHand}/triggerPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de13bf9a-0e98-4722-828a-d1f0dea6091e",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GadgetRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "106ad7eb-500f-4255-af35-b6c03490d1e1",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClimbLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
