@@ -34,6 +34,7 @@ public class Climbable : MonoBehaviour
                 transform.position.y + _collider.size.y / 2,
                 transform.position.z + forwardDisplacement
             );
+            player.transform.position = newPos;
         }
     }
 }
