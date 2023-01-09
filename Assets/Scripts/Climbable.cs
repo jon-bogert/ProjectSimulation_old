@@ -29,11 +29,9 @@ public class Climbable : MonoBehaviour
     {
         if (isTop)
         {
-            Vector3 newPos = new Vector3(
-                transform.position.x,
-                transform.position.y + _collider.size.y / 2,
-                transform.position.z + forwardDisplacement
-            );
+            Vector3 newPos = new Vector3( transform.position.x, transform.position.y + (_collider.size.y * transform.localScale.y) / 2, transform.position.z);
+            Vector3 forwardVector = transform.forward * forwardDisplacement;
+            newPos += forwardVector;
             player.transform.position = newPos;
         }
     }
