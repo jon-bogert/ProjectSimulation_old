@@ -41,7 +41,7 @@ public class Gun : MonoBehaviour
 
     void OnDisable()
     {
-        crosshair.SetActive(false);
+        if (crosshair) crosshair.SetActive(false);
     }
 
     // Update is called once per frame

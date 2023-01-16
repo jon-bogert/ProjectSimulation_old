@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.XR.GoogleVr;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class IKHead : MonoBehaviour
 {
@@ -14,13 +15,18 @@ public class IKHead : MonoBehaviour
 
     [SerializeField] Transform headTarget;
     [SerializeField] Transform headset;
+    [SerializeField] Vector3 positionOffset;
 
     void LateUpdate()
     {
+        //transform.position = headset.TransformPoint(positionOffset);
         transform.position = headset.position;
-        transform.forward = Vector3.ProjectOnPlane(headset.up, Vector3.up).normalized;
-
-
+        Vector3 newForward = Vector3.ProjectOnPlane(headset.up, Vector3.up).normalized;
+        if (newForward != Vector3.zero)
+        {
+            transform.forward = newForward;
+        }
+        
         // rootObject.position = followObject.position + headBodyOffset;
         // rootObject.forward = Vector3.ProjectOnPlane(followObject.up, Vector3.up).normalized;
 
