@@ -16,7 +16,7 @@ public enum WeaponMode : int
 
 public enum GadgetMode : int
 {
-    None
+    None, Grapple
 }
 
 public class Player : MonoBehaviour
@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool isWeaponLeft = false;
 
     [SerializeField] GameObject weaponMenu;
+    [SerializeField] GameObject gadgetMenu;
 
     [SerializeField] float climbTeleportThreshold = 0.66f;
 
@@ -39,6 +40,7 @@ public class Player : MonoBehaviour
     [SerializeField] InputActionReference _climbLeftInput;
     [SerializeField] InputActionReference _climbRightInput;
     [SerializeField] InputActionReference _gadgetRightInput;
+    [SerializeField] InputActionReference _gadgetLeftInput;
     
     [Header("Weapon Objects")]
     [SerializeField] PlayerHand handRight;
@@ -46,6 +48,7 @@ public class Player : MonoBehaviour
 
     [Header("Gadget Objects")]
     [SerializeField] PlayerHand handLeft;
+    [SerializeField] GameObject grappleGun;
     
     VRDebug _vrDebug;
     XRCharacterController _charController;
@@ -60,6 +63,7 @@ public class Player : MonoBehaviour
     bool isClimbingLeft = false;
     bool isClimbingRight = false;
     bool isRightGadgetVisible = false;
+    bool isLeftGadgetVisible = false;
 
 
     
@@ -75,6 +79,7 @@ public class Player : MonoBehaviour
         _climbLeftInput.action.performed += ClimbLeft;
         _climbRightInput.action.performed += ClimbRight;
         _gadgetRightInput.action.performed += GadgetRight;
+        _gadgetLeftInput.action.performed += GadgetLeft;
     }
 
     // Start is called before the first frame update
@@ -83,6 +88,7 @@ public class Player : MonoBehaviour
         _vrDebug = FindObjectOfType<VRDebug>();
 
         _charController = GetComponent<XRCharacterController>();
+        _charController.SetGravityEnabled(false);
     }
 
     // Update is called once per frame
@@ -105,6 +111,7 @@ public class Player : MonoBehaviour
         _climbLeftInput.action.performed -= ClimbLeft;
         _climbRightInput.action.performed -= ClimbRight;
         _gadgetRightInput.action.performed -= GadgetRight;
+        _gadgetLeftInput.action.performed -= GadgetLeft;
     }
     
     
@@ -116,8 +123,6 @@ public class Player : MonoBehaviour
     void Climb(bool left, bool right)
     {
         float teleThreshold = ((_camera.transform.position.y - cameraOffsetObj.position.y) * climbTeleportThreshold) + cameraOffsetObj.position.y;
-        _vrDebug.Monitor(1, handLeft.transform.position.y.ToString());
-        _vrDebug.Monitor(3, teleThreshold.ToString());
         if (left && right)
         {
             _charController.ClimbMove((-handLeft.GetPosDelta() - handRight.GetPosDelta()) / 2);
@@ -168,6 +173,24 @@ public class Player : MonoBehaviour
                 break;
             case WeaponMode.SemiAutoRifle :
                 semiAutoRifle.SetActive(true);
+                break;
+        }
+    }
+    
+    void AssignGadget()
+    {
+        //Deactivate All
+        handLeft.gameObject.SetActive(false);
+        grappleGun.SetActive(false);
+        
+        //ActivateSelected
+        switch (gadgetMode)
+        {
+            case GadgetMode.None:
+                handLeft.gameObject.SetActive(true);
+                break;
+            case GadgetMode.Grapple:
+                grappleGun.SetActive(true);
                 break;
         }
     }
@@ -230,6 +253,41 @@ public class Player : MonoBehaviour
                 tmpWeapon = WeaponMode.None;
             }
             AssignWeapon();
+        }
+    }
+    
+    GadgetMode tmpGadget = GadgetMode.None;
+    void GadgetLeft(InputAction.CallbackContext ctx)
+    {
+        isLeftGadgetVisible = !isLeftGadgetVisible;
+        if (isLeftGadgetVisible) // On Press
+        {
+            tmpGadget = gadgetMode;
+            gadgetMode = GadgetMode.None;
+            AssignGadget();
+            gadgetMenu.SetActive(true);
+            gadgetMenu.transform.position = handLeft.transform.position;
+            gadgetMenu.transform.LookAt(_camera.transform.position);
+        }
+        else // On Release
+        {
+            gadgetMenu.SetActive(false);
+            GadgetMode newMode = handLeft.GetGadgetModeBuffer();
+            // If None -> Check Toggle to last weapon used
+            if (tmpGadget == GadgetMode.None && newMode == GadgetMode.None)
+            {
+                gadgetMode = lastGadget;
+            }
+            else
+            {
+                if (newMode != GadgetMode.None || lastGadget == GadgetMode.None)
+                {
+                    lastGadget = tmpGadget;
+                }
+                gadgetMode = newMode;
+                tmpGadget = GadgetMode.None;
+            }
+            AssignGadget();
         }
     }
     

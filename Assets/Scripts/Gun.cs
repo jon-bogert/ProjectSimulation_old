@@ -47,9 +47,8 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RaycastHit hitInfo;
         Vector3 chPos;
-        if (Physics.Raycast(muzzle.position, muzzle.forward, out hitInfo, crosshairRange))
+        if (Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hitInfo, crosshairRange))
             chPos = hitInfo.point;
         else
         {

@@ -97,6 +97,16 @@ public class XRCharacterController : MonoBehaviour
         _charController.Move(amt);
     }
 
+    public void GrappleMove(Vector3 pos)
+    {
+        Vector3 amt = new Vector3(
+            pos.x - transform.position.x,
+            pos.y - transform.position.y,
+            pos.z - transform.position.z
+            );
+        _charController.Move(amt);
+    }
+
     void MoveInput(InputAction.CallbackContext ctx)
     {
         _moveVector = new Vector3(ctx.ReadValue<Vector2>().x, 0f, ctx.ReadValue<Vector2>().y);
@@ -139,6 +149,6 @@ public class XRCharacterController : MonoBehaviour
 
     public void SetGravityEnabled(bool setTo)
     {
-        _gravity.GravityEnabled = setTo;
+        _gravity.ToggleGravity(setTo);
     }
 }
