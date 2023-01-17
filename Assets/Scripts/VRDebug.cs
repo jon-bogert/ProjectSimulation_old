@@ -28,6 +28,11 @@ public class VRDebug : MonoBehaviour
     float timer5 = 0f;
 
     //bool isFirstMsg = true;
+
+    public static VRDebug Get()
+    {
+        return FindObjectOfType<VRDebug>();
+    }
     
     // Start is called before the first frame update
     void Start()

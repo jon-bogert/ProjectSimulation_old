@@ -7,16 +7,18 @@ using UnityEngine.InputSystem;
 public class GrappleGun : MonoBehaviour
 {
     [SerializeField] float maxRange = 10f;
-    [SerializeField] float timeToTravel = 2f;
+    [SerializeField] float travelSpeed = 2f;
     
     [Header("References")]
     [SerializeField] Transform muzzle;
     [SerializeField] GameObject indicator;
-    [SerializeField] XRCharacterController player;
+    [SerializeField] Player player;
 
     [Header("Input")]
     [SerializeField] InputActionReference inputShoot;
 
+    float timeToTravel = 0f;
+    
     bool canAttach = false;
     Vector3 targetPos = Vector3.zero;
 
@@ -29,6 +31,8 @@ public class GrappleGun : MonoBehaviour
     void Awake()
     {
         inputShoot.action.performed += ShootAction;
+        
+        if (travelSpeed == 0f) Debug.LogError("travelSpeed must not be Zero");
     }
 
     // Start is called before the first frame update
@@ -56,6 +60,8 @@ public class GrappleGun : MonoBehaviour
             targetPos = hitInfo.transform.position;
             canAttach = true;
 
+            if (travelSpeed != 0f) timeToTravel = hitInfo.distance / travelSpeed;
+
             indicator.SetActive(true);
             indicator.transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
             indicator.transform.LookAt(muzzle);
@@ -78,7 +84,8 @@ public class GrappleGun : MonoBehaviour
                 muzzle.position.z - player.transform.position.z
             );
 
-            player.GrappleMove(targetPos + playerDelta); 
+            //player.GrappleMove(targetPos + playerDelta); 
+            player.transform.position = targetPos + playerDelta;
         }
         if (isGrappleing)
         {
@@ -91,7 +98,8 @@ public class GrappleGun : MonoBehaviour
                 muzzle.position.z - player.transform.position.z
                 );
 
-            player.GrappleMove(newPosition - playerDelta);
+            //player.GrappleMove(newPosition - playerDelta);
+            player.transform.position = newPosition - playerDelta;
             travelTimer += Time.deltaTime;
         }
     }
@@ -117,12 +125,12 @@ public class GrappleGun : MonoBehaviour
                 muzzle.position.z);
             travelTimer = 0f;
             isGrappleing = true;
-            player.SetGravityEnabled(false);
+            player.SetIsGrappling(true);
         }
         else if (!inputIsDown)
         {
             isGrappleing = false;
-            player.SetGravityEnabled(true);
+            player.SetIsGrappling(false);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
@@ -58,7 +59,9 @@ public class Player : MonoBehaviour
 
     WeaponMode lastWeapon = WeaponMode.None;
     GadgetMode lastGadget = GadgetMode.None;
-    
+
+    bool isGrappling = false;
+
     //Input Related
     bool isClimbingLeft = false;
     bool isClimbingRight = false;
@@ -102,7 +105,10 @@ public class Player : MonoBehaviour
             _charController.SetGravityEnabled(false);
             Climb(left, right);
         }
-        else _charController.SetGravityEnabled(true);
+        else if (!isGrappling)
+        {
+            _charController.SetGravityEnabled(true);
+        }
     }
     
     void OnDestroy()
@@ -194,8 +200,12 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-    
-    
+
+    public void SetIsGrappling(bool set)
+    {
+        isGrappling = set;
+        _charController.SetGravityEnabled(!set);
+    }
     
     
     // =============================================================================================================

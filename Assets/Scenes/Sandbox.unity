@@ -3530,10 +3530,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRange: 10
-  timeToTravel: 2
+  travelSpeed: 10
   muzzle: {fileID: 1668056890}
   indicator: {fileID: 795785312}
-  player: {fileID: 6401541095709173423}
+  player: {fileID: 1880524116}
   inputShoot: {fileID: -1881198394290341404, guid: ac05cd51433f63e45af51117a552a656,
     type: 3}
 --- !u!1 &918415038
@@ -6221,6 +6221,7 @@ GameObject:
   - component: {fileID: 1593963240}
   - component: {fileID: 1593963239}
   - component: {fileID: 1593963238}
+  - component: {fileID: 1593963242}
   m_Layer: 13
   m_Name: GrappleAnchor
   m_TagString: Grapple
@@ -6237,7 +6238,7 @@ BoxCollider:
   m_GameObject: {fileID: 1593963237}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -6306,6 +6307,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1593963242
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593963237}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1599061144 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7147775673956413065, guid: 13b2d436aebea874ba98945a48cb2c48,

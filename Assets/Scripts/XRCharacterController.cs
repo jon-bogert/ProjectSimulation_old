@@ -7,7 +7,6 @@ using Unity.Mathematics;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 
 public class XRCharacterController : MonoBehaviour
 {
@@ -31,8 +30,6 @@ public class XRCharacterController : MonoBehaviour
     //Members
     Vector3 _moveVector;
     bool _turnTrig = false;
-
-    Vector3 velocity = Vector3.zero;
 
     //Private references
     VRDebug _vrDebug;
@@ -149,6 +146,7 @@ public class XRCharacterController : MonoBehaviour
 
     public void SetGravityEnabled(bool setTo)
     {
-        _gravity.ToggleGravity(setTo);
+        if (_gravity)
+            _gravity.ToggleGravity(setTo);
     }
 }
