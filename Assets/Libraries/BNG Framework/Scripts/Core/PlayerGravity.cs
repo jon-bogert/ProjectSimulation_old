@@ -91,6 +91,16 @@ namespace BNG {
         {
             _movementY = newMovementY;
         }
+
+        public void MultMovementY(float factor)
+        {
+            _movementY *= factor;
+        }
+
+        public float GetMovementY()
+        {
+            return _movementY;
+        }
     }
 }
 

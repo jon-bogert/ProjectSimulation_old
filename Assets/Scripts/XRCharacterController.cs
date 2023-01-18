@@ -5,6 +5,7 @@ using BNG;
 using Microsoft.Win32.SafeHandles;
 using Unity.Mathematics;
 using Unity.XR.CoreUtils;
+using Unity.XR.GoogleVr;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,6 +21,12 @@ public class XRCharacterController : MonoBehaviour
     
     [Header("Jump")]
     [SerializeField] float jumpAmt = 7f;
+
+    [Header("Fall Dampeners")]
+    [SerializeField] bool fallDampenersOn = true;
+    [SerializeField] float fallDamageMinVelocity = -4f;
+    [SerializeField] float fallDampenerDistance = 1f;
+    [SerializeField] float fallDampenerFactor = 0.2f;
     
     [Header("Input Actions")]
     [SerializeField] InputActionReference _moveInput;
@@ -73,6 +80,7 @@ public class XRCharacterController : MonoBehaviour
     {
         ControllerUpdate();
         Move();
+        FallDampeners();
     }
 
     void Move()
@@ -102,6 +110,22 @@ public class XRCharacterController : MonoBehaviour
             pos.z - transform.position.z
             );
         _charController.Move(amt);
+    }
+
+    void FallDampeners()
+    {
+        if (fallDampenersOn && _gravity.GetMovementY() < 0)
+        {
+            bool inRange = Physics.Raycast(_player.transform.position, Vector3.down, out RaycastHit hitInfo, fallDampenerDistance);
+            if (inRange && _gravity.GetMovementY() <= fallDamageMinVelocity && !_charController.isGrounded)
+            {
+                _gravity.MultMovementY(fallDampenerFactor);
+            }
+        }
+        else if (_gravity.GetMovementY() <= fallDamageMinVelocity)
+        {
+            Debug.Log("Fall Damage");
+        }
     }
 
     void MoveInput(InputAction.CallbackContext ctx)
