@@ -21,6 +21,7 @@ public class XRCharacterController : MonoBehaviour
     
     [Header("Jump")]
     [SerializeField] float jumpAmt = 7f;
+    [SerializeField] bool canDoubleJump = false;
 
     [Header("Fall Dampeners")]
     [SerializeField] bool fallDampenersOn = true;
@@ -37,6 +38,7 @@ public class XRCharacterController : MonoBehaviour
     //Members
     Vector3 _moveVector;
     bool _turnTrig = false;
+    bool _hasDoubleJumped = false;
 
     //Private references
     VRDebug _vrDebug;
@@ -81,6 +83,8 @@ public class XRCharacterController : MonoBehaviour
         ControllerUpdate();
         Move();
         FallDampeners();
+        
+        if (_charController.isGrounded && _hasDoubleJumped) _hasDoubleJumped = false;
     }
 
     void Move()
@@ -154,8 +158,9 @@ public class XRCharacterController : MonoBehaviour
 
     void JumpInput(InputAction.CallbackContext ctx)
     {
-        if (_charController.isGrounded)
+        if (_charController.isGrounded || (canDoubleJump && !_hasDoubleJumped))
         {
+            if (!_charController.isGrounded) _hasDoubleJumped = true;
             _gravity.SetMovementY(jumpAmt);
         }
     }

@@ -17,7 +17,7 @@ public enum WeaponMode : int
 
 public enum GadgetMode : int
 {
-    None, Grapple
+    None, Grapple, PlasmaCutter
 }
 
 public class Player : MonoBehaviour
@@ -50,6 +50,7 @@ public class Player : MonoBehaviour
     [Header("Gadget Objects")]
     [SerializeField] PlayerHand handLeft;
     [SerializeField] GameObject grappleGun;
+    [SerializeField] GameObject plasmaCutter;
     
     VRDebug _vrDebug;
     XRCharacterController _charController;
@@ -188,6 +189,7 @@ public class Player : MonoBehaviour
         //Deactivate All
         handLeft.gameObject.SetActive(false);
         grappleGun.SetActive(false);
+        plasmaCutter.SetActive(false);
         
         //ActivateSelected
         switch (gadgetMode)
@@ -197,6 +199,9 @@ public class Player : MonoBehaviour
                 break;
             case GadgetMode.Grapple:
                 grappleGun.SetActive(true);
+                break;
+            case GadgetMode.PlasmaCutter:
+                plasmaCutter.SetActive(true);
                 break;
         }
     }
