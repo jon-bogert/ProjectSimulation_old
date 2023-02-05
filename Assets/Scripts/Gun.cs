@@ -15,7 +15,7 @@ public class Gun : MonoBehaviour
     [SerializeField] Animator muzzleFlashAnimator;
 
     [Header("Crosshair")]
-    [SerializeField] GameObject crosshair;
+    [SerializeField] Reticle crosshair;
     [SerializeField] float crosshairRange = 10f;
     
 
@@ -36,12 +36,12 @@ public class Gun : MonoBehaviour
 
     void OnEnable()
     {
-        crosshair.SetActive(true);
+        crosshair.gameObject.SetActive(true);
     }
 
     void OnDisable()
     {
-        if (crosshair) crosshair.SetActive(false);
+        if (crosshair) crosshair.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -64,6 +64,7 @@ public class Gun : MonoBehaviour
     {
         if (isActiveAndEnabled)
         {
+            crosshair.Trigger();
             muzzleFlashAnimator.SetTrigger("isFiring");
             RaycastHit hitInfo;
             if (Physics.Raycast(muzzle.position, muzzle.forward, out hitInfo, range))
